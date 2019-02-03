@@ -1,0 +1,233 @@
+/*
+  // Example gradient
+  .body{
+    @include background-gradient(#fff14d, #82f8c3, vertical);
+  }
+*/
+
+//================================================================================
+@mixin background-gradient($firstColor, $lastColor, $orientation) {
+  $dir: (
+    one: 'left,',
+    two: 'to right,'
+  );
+
+  $type: 'linear';
+
+  @if ($orientation == 'vertical') {
+    $dir: (
+      one: 'top,',
+      two: 'to bottom,'
+    );
+  } @else if ($orientation == 'radial') {
+    $dir: (
+      one: 'center, ellipse cover,',
+      two: 'ellipse at center,'
+    );
+    $type: 'radial';
+  } @else if ($orientation == 'diagonal-bottom') {
+    $dir: (
+      one: '-45deg,',
+      two: '135deg,'
+    );
+  } @else if ($orientation == 'diagonal-top') {
+    $dir: (
+      one: '45deg,',
+      two: '45deg,'
+    );
+  }
+
+  background: $firstColor;
+  background: -moz-#{$type}-gradient(#{map-get($dir, 'one')} $firstColor 0%, $lastColor 100%);
+  background: -webkit-#{$type}-gradient(#{map-get($dir, 'one')} $firstColor 0%, $lastColor 100%);
+  background: #{$type}-gradient(#{map-get($dir, 'two')} $firstColor 0%, $lastColor 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#{firstColor}', endColorstr='#{$lastColor}}', GradientType=1);
+}
+
+
+
+// MIXIN-ADAPTIV
+//================================================================================
+@mixin max-w($width, $units: px) {
+  @media only screen and (max-width: $width + $units) {
+    @content
+  }
+}
+
+@mixin min-w($width, $units: px) {
+  @media only screen and (min-width: $width + $units) {
+    @content
+  }
+}
+
+@mixin max-min($width-max, $width-min, $units: px) {
+  @media only screen and (max-width: $width-max + $units) and (min-width: $width-min + $units) {
+    @content
+  }
+}
+
+
+@mixin max-h($height, $units: px) {
+  @media only screen and (max-height: $height + $units) {
+    @content
+  }
+}
+
+@mixin min-h($height, $units: px) {
+  @media only screen and (min-height: $height + $units){
+    @content
+  }
+}
+
+
+
+// ADAPTIV FONT
+//================================================================================
+@mixin font($f-min, $f-max, $v-min, $v-max, $imp: null, $units: px) {
+
+  font-size: calcFluidFontSize($f-min, $f-max, $v-min, $v-max, $units) $imp;
+
+  @media only screen and (min-width: ($v-max + $units)) {
+    font-size: ($f-max + $units) $imp;
+  }
+
+  @media only screen and (max-width: ($v-min + $units)) {
+    font-size: ($f-min + $units) $imp;
+  }
+}
+
+
+@function calcFluidFontSize($f-min, $f-max, $v-min, $v-max, $units: px) {
+
+  $k: ($f-max - $f-min)/($v-max - $v-min);
+  $b: $f-min - $k * $v-min;
+
+  $b: $b + $units;
+
+  @return  calc( #{$k} * 100vw + #{$b} );
+}
+
+
+// CLASS PADDING AND MARGIN
+//================================================================================
+@each $prefix, $type in (p: padding, m: margin) {
+  .#{$prefix}{
+    @each $name, $name-data in $pos-elem {
+      @each $val in $indent-data {
+        &#{$val} {
+          #{$type}: #{$val}px !important;
+        }
+        &#{$name} {
+          &#{$val} {
+            #{$type}-#{$name-data}: #{$val}px !important;
+          }
+        }
+      }
+    }
+  }
+}
+
+@each $name-adapt, $data in $adatp-size {
+  @include max-w($data) {
+
+    @each $prefix, $type in (p: padding, m: margin) {
+      .#{$prefix}{
+        @each $name, $name-data in $pos-elem {
+          @each $val in $indent-data {
+            &#{$val}#{$name-adapt} {
+              #{$type}: #{$val}px !important;
+            }
+            &#{$name} {
+              &#{$val}#{$name-adapt} {
+                #{$type}-#{$name-data}: #{$val}px !important;
+              }
+            }
+          }
+        }
+      }
+    }
+
+  }
+}
+
+
+// GRID
+//================================================================================
+.ct {
+  position: relative;
+  margin-left: auto;
+  margin-right: auto;
+  padding-right: #{$indent-grid}px;
+  padding-left: #{$indent-grid}px;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  margin-left: -#{$indent-grid}px;
+  margin-right: -#{$indent-grid}px;
+  flex: 0 0 auto;
+}
+
+.cf {
+  flex-grow: 1;
+}
+
+@for $i from 1 to $column-count {
+
+  .c#{$i} {
+    width: ($column-width-1 * $i) + %;
+    padding: 0 #{$indent-grid}px;
+  }
+
+  .co#{$i} {
+    margin-left: ($column-width-1 * $i) + %;
+  }
+}
+
+.c#{$column-count} {
+  width: 100%;
+  padding: 0 #{$indent-grid}px;
+}
+
+
+@each $name, $data in $adatp-size {
+  @include max-w($data) {
+
+
+    @for $i from 1 to $column-count {
+
+      .c#{$i}#{$name} {
+        width: ($column-width-1 * $i) + %;
+        padding: 0 #{$indent-grid}px;
+      }
+
+      .co#{$i}#{$name} {
+        margin-left: ($column-width-1 * $i) + %;
+      }
+    }
+
+    .c#{$column-count}#{$name} {
+      width: 100%;
+      padding: 0 #{$indent-grid}px;
+    }
+
+  }
+}
+
+
+// WIDTH
+//================================================================================
+
+$width-cont: $max-w / $column-count;
+
+@for $i from 1 to $column-count {
+
+  .bw#{$i} {
+    max-width: round($i * $width-cont) + px;
+  }
+}
+
+.bw {
+  max-width: $max-w + px;
+}

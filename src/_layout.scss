@@ -1,0 +1,386 @@
+/*
+
+.t  - text-align: left
+.tr
+.tl
+.tc
+.tj
+
+.fw - font: weight
+.fwb
+.fwl
+
+------
+
+.bl
+
+.bcl - clear: both
+
+.ma	- margin: auto
+
+.pr	- position: relative
+
+.fll	- loat: left
+.flr	- loat: right
+
+
+.f		- display: flex
+
+.cf		- flex-grow: 1;
+
+.faic	- 	align-items: center;
+
+.facc	- 	align-content: center;
+
+.fjc	-	justify-content: center;
+
+*/
+
+//================================================================================
+
+
+// GLOBAL-CLASS
+//================================================================================
+.w {
+	width: 100%;
+}
+
+.bl {
+	display: block;
+	width: 100%;
+}
+
+.ba {
+	margin-left: auto !important;
+	margin-right: auto !important;
+}
+
+// STYLE-POSITION
+//================================================================================
+.pr {
+	position: relative;
+}
+
+// STYLE-FLOAT
+//================================================================================
+
+.fll {
+	float: left;
+}
+
+.flr {
+	float: right;
+}
+
+.bcl {
+	display: block;
+	clear: both;
+}
+
+// STYLE-FLEX
+//================================================================================
+.f {
+	display: flex;
+	flex-wrap: wrap;
+}
+
+.faic {
+	align-items: center;
+}
+
+.faib {
+	align-items: baseline;
+}
+
+.fais {
+	align-items: flex-start;
+}
+
+.faie {
+	align-items: flex-end;
+}
+
+@each $name, $data in $adatp-size {
+	@include max-w($data) {
+
+		.faic#{$name} {
+			align-items: center;
+		}
+
+		.faib#{$name} {
+			align-items: baseline;
+		}
+
+		.fais#{$name} {
+			align-items: flex-start;
+		}
+
+		.faie#{$name} {
+			align-items: flex-end;
+		}
+	}
+}
+
+//----
+
+.facc {
+	align-content: center;
+}
+
+.facs {
+	align-content: flex-start;
+}
+
+.face {
+	align-content: flex-end;
+}
+
+.facb {
+	align-content: space-between;
+}
+
+.faca {
+	align-content: space-around;
+}
+
+.facst {
+	align-content: stretch;
+}
+
+//----
+
+.fasc {
+	align-self: center;
+}
+
+.fasb {
+	align-self: baseline;
+}
+
+.fass {
+	align-self: flex-start;
+}
+
+.fase {
+	align-self: flex-end;
+}
+
+.fasst {
+	align-self: stretch;
+}
+
+.fasa {
+	align-self: auto;
+}
+
+//----
+
+.fjc {
+	justify-content: center;
+}
+
+.fjs {
+	justify-content: flex-start;
+}
+
+.fje {
+	justify-content: flex-end;
+}
+
+.fja {
+	justify-content: space-around;
+}
+
+.fjb {
+	justify-content: space-between;
+}
+
+
+// ORDER
+//================================================================================
+@for $i from 0 to $order-col {
+
+	.or#{$i} {
+		order: 0;
+	}
+
+	@each $name, $data in $adatp-size {
+		@include max-w($data) {
+			.or#{$i}#{$name} {
+				order: 0;
+			}
+		}
+	}
+}
+
+// TEXT-DIRECTION
+//================================================================================
+.t {
+	text-align: left !important;
+}
+
+.tr {
+	text-align: right !important;
+}
+
+.tc {
+	text-align: center !important;
+}
+
+.tj {
+	text-align: justify !important;
+}
+
+@each $name, $data in $adatp-size {
+	@include max-w($data) {
+		.t#{$name} {
+			text-align: left !important;
+		}
+
+		.tr#{$name} {
+			text-align: right !important;
+		}
+
+		.tc#{$name} {
+			text-align: center !important;
+		}
+
+		.tj#{$name} {
+			text-align: justify !important;
+		}
+	}
+}
+
+// FONT-WEIGHT
+//================================================================================
+.fw {
+	font-weight: normal;
+}
+
+.fwb {
+	font-weight: bold;
+}
+
+.fwl {
+	font-weight: lighter;
+}
+
+@each $name, $data in $adatp-size {
+	@include max-w($data) {
+		.fw#{$name} {
+			font-weight: normal;
+		}
+
+		.fwb#{$name} {
+			font-weight: bold;
+		}
+
+		.fwl#{$name} {
+			font-weight: lighter;
+		}
+	}
+}
+
+//================================================================================
+
+%fluid {
+	margin-left: auto;
+	margin-right: auto;
+}
+
+%bgi {
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: contain;
+}
+
+%btn {
+	display: block;
+}
+
+%blue-separator {
+	&::after {
+		content: '';
+		display: block;
+		width: 100%;
+		height: 10px;
+		margin-top: 60px;
+		@extend %bgi;
+		background-image: url('/assets/images/svg-sprite.svg#locations-separator');
+		background-size: 1180px 1180px;
+		order: 100;
+		@include max-w($size-m) {
+			margin-top: 30px;
+		}
+	}
+}
+
+//================================================================================
+
+.page__title {
+
+}
+
+
+
+.page__link {
+	@include font(14,
+	18,
+	375,
+	1440);
+	font-weight: 600;
+	text-align: left;
+	color: #023066;
+}
+
+
+.page__img {
+	object-fit: cover;
+}
+
+.page__list {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+}
+
+body {
+
+}
+
+.s_wrapper {
+	width: 1180px;
+	max-width: 90%;
+	@extend %fluid;
+}
+
+.link {
+	text-decoration: underline;
+	&__text {
+		font-weight: bold;
+		color: $darkblue-color;
+		&_desc {
+			@include font(16,
+							18,
+							375,
+							1440);
+		}
+	}
+	&:hover {
+		text-decoration: none;
+	}
+}
+
+.btn {
+	@extend %btn;
+	height: 50px;
+	line-height: 46px;
+	display: inline-block;
+	vertical-align: middle;
+	width: auto;
+	padding: 0 36px;
+
+	&_big-font {
+		@include font(14, 22, 375, 1440);
+	}
+}

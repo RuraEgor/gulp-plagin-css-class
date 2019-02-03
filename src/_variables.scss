@@ -1,0 +1,100 @@
+// GLOBAL
+$tran: 150ms;
+$tran-f: 620ms;
+$tran-slow: 320ms;
+
+// COLORS
+$default: #f7e832;
+$c-heading-darken: #323231;
+$c-heading-dark: #444444;
+$c-heading-gray: #6a6a6a;
+$c-heading-gray-light: #bababa;
+$c-error: #ff4444;
+$c-success: #5ddb9f;
+$c-info: #62e3f5;
+$c-bg: #fcfcfc;
+$c-text: $c-heading-gray;
+$c-cat-link: #05244b;
+
+// TYPOGRAPHY
+$flh-normal: 1.3;
+$fw-light: 200;
+$fw-normal: normal;
+$fw-medium: 500;
+$fw-bold: bold;
+
+/// BOOTSTRAP CUSTOMIZED VARIABLES
+$theme-colors: () !default;
+$theme-colors: map-merge((
+  "default":    $default
+), $theme-colors);
+
+
+$custom-file-text: (
+  placeholder: (
+    en: "Choose file...",
+    es: "Seleccionar archivo...",
+    tr: "Dosya seç...",
+  ),
+  button-label: (
+    en: "Browse",
+    es: "Navegar",
+    tr: "Gözat"
+  )
+);
+
+$ff: "Work Sans", sans-serif;
+
+$red-color: #ff6000;
+$darkblue-color: #08256c;
+$mid-blue-color: #023066;
+$lightgreen-color: #06edc7;
+$lightgreen2-color: #00b0bd;
+$white-color: #fff;
+$bg-gray: #eef4f6;
+$icon-gray: #c8e3ec;
+$light-gray: rgba(0, 176, 189, 0.1);
+$br-categ: rgba(8, 37, 108, 0.1);
+$bg-accord: rgba(0, 176, 189, 0.06);
+
+// MAIN SIZE
+//==========
+$max-w: 1400;
+
+$size-b: 992;
+$size-m: 768;
+$size-s: 470;
+
+// MAIN SIZE
+//==========
+$e: 1199;
+$l: 991;
+$m: 767;
+$s: 575;
+$x: 420;
+
+
+$adatp-size: (
+  -e: $e,
+  -l: $l,
+  -m: $m,
+  -s: $s,
+  -x: $x,
+);
+
+$pos-elem: (
+  t: 'top',
+  r: 'right',
+  b: 'bottom',
+  l: 'left',
+);
+
+$indent-data: (0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100);
+
+// GRID-DATA
+//==========
+$column-count: 12;
+$column-width-1: ( 100 /$column-count );
+$indent-grid: 10;  //  side indent in grind (margin: -10px)
+$order-col: 10;    // col class order
+

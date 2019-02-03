@@ -1,0 +1,11 @@
+@media (max-width: 800px) {
+					.dbIXX800 {
+        	display: block !important;
+        }
+				}@media (max-width: 1200px) and (min-width: 500px) {
+				.mb100XX1200-500 {
+        	margin-bottom: 100px;
+        }
+			}.w45qXX {
+        	width: 45%;
+        }
