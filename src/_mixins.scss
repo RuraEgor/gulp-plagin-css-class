@@ -4,8 +4,6 @@
     @include background-gradient(#fff14d, #82f8c3, vertical);
   }
 */
-[data-dawdaw="fz145"]
-[data-dawdaw="fz145 lh34"]
 //================================================================================
 @mixin background-gradient($firstColor, $lastColor, $orientation) {
   $dir: (

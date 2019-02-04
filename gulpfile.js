@@ -105,8 +105,7 @@ let aliasClass = {
     'p': 'padding',
     'pb': 'padding-bottom',
     'fz': 'font-size',
-    'lh': 'line-height',
-    // 'db': 'display: block'
+    'lh': 'line-height'
 }
 
 
@@ -115,19 +114,19 @@ function addNewClass() {
     
     let textFile = fs.readFileSync("index.html", "utf8");
 
-    const srhEl = 'XX';
+    const srhEl = '@';
 
-    const re = /class=("|').*XX.*("|')/ig;
+    const re = /data-css=("|').*@.*("|')/ig;
 
     let found = textFile.match(re);
 
     let massClass = [];
 
     for (const key in found) {
-        found[key] = found[key].replace(/class/, "");
-        found[key] = found[key].replace(/=/, "");
-        found[key] = found[key].replace(/"/g, "");
-        found[key] = found[key].replace(/'/g, "");
+        found[key] = found[key].replace(/data-css/, '');
+        found[key] = found[key].replace(/=/, '');
+        found[key] = found[key].replace(/"/g, '');
+        found[key] = found[key].replace(/'/g, '');
 
         if (found[key].match(/\s/g)) {
 
@@ -142,7 +141,7 @@ function addNewClass() {
     }
 
     //====  DELETE DUOBLICATE
-    const regSpeshSimv = /.*XX.*/;
+    const regSpeshSimv = /.*@.*/;
 
     massClass = massClass.sort().reduce(function (arr, el) {
         if (!arr.length || arr.length && arr[arr.length - 1] != el) {
@@ -158,15 +157,15 @@ function addNewClass() {
 
 
     //====
-    const regBegClass = /([A-Za-z]*)[\d]*[A-Za-z]*[I]?XX{1}/;
+    const regBegClass = /([A-Za-z]*)[\d]*[^\d-!]*[!]?[@]{1}/;
 
-    const regDataClass = /([\d]*)[^\d]*XX+/i;
-    const regDataEd = /[\d]*([^\d-^I]*)[I]?XX/;
-    const regImpot = /([I]?)XX+/;
+    const regDataClass = /([\d]*)[^\d]*@+/i;
+    const regDataEd = /[\d]*([^\d-!]*)[!]?@/;
+    const regImpot = /([!]?)@+/;
 
-    const regSizeClass = /XX+(.*)/;
-    const regSizeMaxClass = /XX+(\d*)/;
-    const regSizeMinClass = /XX+[\d]*[-]{1}(\d*)/;
+    const regSizeClass = /@+(.*)/;
+    const regSizeMaxClass = /@+(\d*)/;
+    const regSizeMinClass = /@+[\d]*[-]{1}(\d*)/;
 
 
     let nameClasses = [];
@@ -190,16 +189,18 @@ function addNewClass() {
         }
 
         //=====
-        dataClass.nameClass = massClass[key];
+        let nameClass = massClass[key].replace(/\@/, '\\@');
+        nameClass = nameClass.replace(/\!/, '\\!');
+        nameClass = nameClass.replace(/\%/, '\\%');
+        dataClass.nameClass = nameClass;
 
         let nameProp = massClass[key].match(regBegClass)[1];
         if (nameProp) {
 
             for (const item in aliasClass) {
-                if (dataClass.importProp && nameProp.match(/.*[I]?/)) {
-                    if (nameProp.match(/(.*)[I]/)) nameProp = nameProp.match(/(.*)[I]/)[1];
+                if (dataClass.importProp && nameProp.match(/.*[!]?/)) {
+                    if (nameProp.match(/(.*)[!]/)) nameProp = nameProp.match(/(.*)[!]/)[1];
                 }
-
 
                 if (item == nameProp) {
                     dataClass.nameProp = aliasClass[item];
@@ -217,9 +218,7 @@ function addNewClass() {
 
         if (root7888) {
             if (root7888[1]) {
-                if (root7888[1] == 'q') {
-                    dataClass.edProp = '%';
-                } else if (root7888[1] == 'n') {
+                if (root7888[1] == 'n') {
                     dataClass.edProp = '';
                 } else {
 	                dataClass.edProp = root7888[1];
@@ -258,7 +257,7 @@ function addNewClass() {
             strPorpClass = `${item.nameProp}${item.importProp};`;
         }
 
-        strPorpClass = `.${item.nameClass} {
+        strPorpClass = `[data-css*=${item.nameClass}] {
         	${strPorpClass}
         }`;
 
@@ -295,12 +294,16 @@ function addNewClass() {
     }
 
 
+    strAllCssProp = `.css-rule {
+        ${strAllCssProp}
+    }`;
+
+
     //=======
     //=======
-    fs.writeFile('css-alias.css', strAllCssProp, function (error) {
+    fs.writeFile('src/_special.scss', strAllCssProp, function (error) {
 
         if (error) throw error; // если возникла ошибка
-
     });
 }
 

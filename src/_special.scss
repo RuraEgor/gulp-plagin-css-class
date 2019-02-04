@@ -1,0 +1,9 @@
+.css-rule {
+        @media (max-width: 1500px) {
+					[data-css*=fz55\@1500] {
+        	font-size: 55px;
+        }
+				}[data-css*=lh4n\@] {
+        	line-height: 4;
+        }
+    }
