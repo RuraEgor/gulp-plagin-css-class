@@ -6,6 +6,10 @@
 				.mb100XX1200-500 {
         	margin-bottom: 100px;
         }
-			}.w45qXX {
-        	width: 45%;
+			}.pb40XX-pb120IXX-500 {
+        	padding-bottom: 40px;
+        }@media (max-width: 800px) {
+					.w80qXX800 {
+        	width: 80%;
         }
+				}

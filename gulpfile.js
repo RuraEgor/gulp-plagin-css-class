@@ -92,29 +92,6 @@ gulp.task('default', ['build', 'watch', 'browser-sync']);
 gulp.task('default-browser-sync', ['build', 'watch', 'browser-sync']);
 
 
-function writeFile777(fileDoc) {
-    console.log('ttttttttttttttt', fileDoc);
-
-    // let dataInd = fs.readFileSync("css-alias.css", "utf8");
-    // dataInd = dataInd.replace(/class/, 'class8888888888')
-
-    let dataInd888 = fs.readFileSync("index.html", "utf8");
-
-    fs.writeFile("hello.txt", dataInd888, function (error) {
-        if (error) throw error; // если возникла ошибка
-        console.log("Асинхронная запись файла завершена. Содержимое файла:");
-        let data = fs.readFileSync("css-alias.css", "utf8");
-        // console.log(data);  // выводим считанные данные
-    });
-}
-
-function some78() {
-    let textFile = fs.readFileSync("index.html", "utf8");
-    let textBody = textFile.match(/[<body>]+.*/g);
-    console.log('tttttttttttttt', textBody);
-}
-
-
 //============================================================================
 //============================================================================
 //============================================================================
@@ -126,21 +103,19 @@ let aliasClass = {
     'm': 'margin',
     'mb': 'margin-bottom',
     'p': 'padding',
-    'pb': 'padding-bottom'
+    'pb': 'padding-bottom',
+    'fz': 'font-size',
+    'lh': 'line-height',
     // 'db': 'display: block'
 }
 
-// var aliasClass = require('js/alias.js');
-// console.log( 'fffffffffffff', con888 );
 
 
 function addNewClass() {
+    
     let textFile = fs.readFileSync("index.html", "utf8");
-    // let textBody = textFile.match(/[<body]{1}.*[<\/body>]{1}/);
 
     const srhEl = 'XX';
-
-    // const re = /class=("|').*XX.*("|')/ig;
 
     const re = /class=("|').*XX.*("|')/ig;
 
@@ -244,8 +219,10 @@ function addNewClass() {
             if (root7888[1]) {
                 if (root7888[1] == 'q') {
                     dataClass.edProp = '%';
+                } else if (root7888[1] == 'n') {
+                    dataClass.edProp = '';
                 } else {
-                    dataClass.edProp = root7888[1];
+	                dataClass.edProp = root7888[1];
                 }
             } else {
                 dataClass.edProp = 'px';
