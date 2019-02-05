@@ -175,12 +175,12 @@
 @for $i from 1 to $column-count {
 
   .c#{$i} {
-    width: ($column-width-1 * $i) + %;
+    width: ($column-width-1 * $i) + '%';
     padding: 0 #{$indent-grid}px;
   }
 
   .co#{$i} {
-    margin-left: ($column-width-1 * $i) + %;
+    margin-left: ($column-width-1 * $i) + '%';
   }
 }
 
@@ -197,12 +197,12 @@
     @for $i from 1 to $column-count {
 
       .c#{$i}#{$name} {
-        width: ($column-width-1 * $i) + %;
+        width: ($column-width-1 * $i) + '%';
         padding: 0 #{$indent-grid}px;
       }
 
       .co#{$i}#{$name} {
-        margin-left: ($column-width-1 * $i) + %;
+        margin-left: ($column-width-1 * $i) + '%';
       }
     }
 

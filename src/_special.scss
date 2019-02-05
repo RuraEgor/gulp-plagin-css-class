@@ -1,9 +1,9 @@
 .css-rule {
-        @media (max-width: 1500px) {
-					[data-css*=fz55\@1500] {
-        	font-size: 55px;
+        @media (max-width: 1000px) {
+					[data-css~=fz18-fz14-fz10\@1000] {
+        	font-size: 10px;
         }
-				}[data-css*=lh4n\@] {
-        	line-height: 4;
+				}[data-css~=fz38\@] {
+        	font-size: 38px;
         }
     }
