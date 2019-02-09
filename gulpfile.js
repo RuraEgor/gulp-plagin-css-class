@@ -99,13 +99,18 @@ gulp.task('default-browser-sync', ['build', 'watch', 'browser-sync']);
 
 let aliasClass = {
     'db': 'display: block',
+    'df': 'display: flex',
+    'dfi': 'display: flex-inline',
+    'aic': 'align-items: center',
+    'h': 'height',
     'w': 'width',
     'm': 'margin',
     'mb': 'margin-bottom',
     'p': 'padding',
     'pb': 'padding-bottom',
     'fz': 'font-size',
-    'lh': 'line-height'
+    'lh': 'line-height',
+    'tc': 'text-align: center'
 }
 
 
@@ -257,7 +262,7 @@ function addNewClass() {
             strPorpClass = `${item.nameProp}${item.importProp};`;
         }
 
-        strPorpClass = `[data-css*=${item.nameClass}] {
+        strPorpClass = `[data-css~=${item.nameClass}] {
         	${strPorpClass}
         }`;
 
