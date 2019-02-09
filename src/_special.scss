@@ -1,7 +1,21 @@
 .css-rule {
-        @media (max-width: 1450px) and (min-width: 22px) {
-				[data-css~=fz34-57\@1450-22@700-47@900] {
-        	: 57px;
-        }
-			}
+        [data-css~=fz30-22\@1000-14\@800] {
+                font-size: 30px;@media (max-width: 1000px) {
+					font-size: 22px;
+				}@media (max-width: 800px) {
+					font-size: 14px;
+				}
+            }[data-css~=mb200-100\@1000-500\@500] {
+                margin-bottom: 200px;@media (max-width: 1000px) {
+					margin-bottom: 100px;
+				}@media (max-width: 500px) {
+					margin-bottom: 500px;
+				}
+            }[data-css~=pb200-100\@1000-500\@500] {
+                padding-bottom: 200px;@media (max-width: 1000px) {
+					padding-bottom: 100px;
+				}@media (max-width: 500px) {
+					padding-bottom: 500px;
+				}
+            }
     }
