@@ -97,28 +97,17 @@ gulp.task('default-browser-sync', ['build', 'watch', 'browser-sync']);
 //============================================================================
 //============================================================================
 
-let aliasClass = {
-    'db': 'display: block',
-    'df': 'display: flex',
-    'dfi': 'display: flex-inline',
-    'aic': 'align-items: center',
-    'h': 'height',
-    'w': 'width',
-    'm': 'margin',
-    'mb': 'margin-bottom',
-    'p': 'padding',
-    'pb': 'padding-bottom',
-    'fz': 'font-size',
-    'lh': 'line-height',
-    'tc': 'text-align: center'
-}
+const aliasClassSourch = require('./js/alias');
+const aliasClass = aliasClassSourch.zn;
+
+const sizeValueSourch = require('./js/varSize');
+const sizeValue = sizeValueSourch.zn;
 
 
 function addNewClass() {
 
     let textFile = fs.readFileSync("index.html", "utf8");
 
-    const srhEl = '@';
 
     const regFirstSearch = /data-css=("|').*@*.*("|')/ig;
 
@@ -144,6 +133,22 @@ function addNewClass() {
         }
     }
 
+
+
+    // for (let keySize in massClass) {
+    //     if (massClass[keySize].match(/[$]/)) {
+    //
+    //         for (const keySizeVar in sizeValue) {
+    //
+    //             const regex = new RegExp('[$]' + keySizeVar, 'g');
+    //             if (massClass[keySize].match(regex)) {
+    //                 massClass[keySize] = massClass[keySize].replace(regex, sizeValue[keySizeVar]);
+    //             }
+    //         }
+    //     }
+    // }
+
+
     //====  DELETE DUOBLICATE
     const regSpeshSimv = /.*@.*/;
 
@@ -151,10 +156,6 @@ function addNewClass() {
         if (!arr.length || arr.length && arr[arr.length - 1] != el) {
 
             arr.push(el);
-
-            // if (el.match(regSpeshSimv)) {
-            //     arr.push(el);
-            // }
         }
         return arr;
     }, []);
@@ -171,22 +172,12 @@ function addNewClass() {
     const regImpot = /[!]{1}/;
 
     const regSizeClass = /@+(.*)/;
-    const regSizeMaxClass = /@+[$]?([\w-\d]*)[>]?[$]?[\w-\d]*/;
-    const regSizeMinClass = /@+[$]?[\w-\d]*[<]{1}[$]?([\w-\d]*)/;
+    const regSizeMaxClass = /@+([$]?[\w-\d]*)[>]?[$]?[\w-\d]*/i;
+    const regSizeMinClass = /@+[$]?[\w-\d]*[<]{1}([$]?[\w-\d]*)/i;
 
     let nameClasses = [];
 
     for (const key in massClass) {
-
-        // let dataClass = {
-        //     nameClass: '',
-        //     nameProp: '',
-        //     znProp: '',
-        //     edProp: '',
-        //     importProp: '',
-        //     maxSize: '',
-        //     minSize: ''
-        // }
 
         let dataClass = {
             nameClass: '',
@@ -206,7 +197,7 @@ function addNewClass() {
 
 
         //=====
-        let nameProp = massClass[key].match(regBegClass)[1];
+        const nameProp = massClass[key].match(regBegClass)[1];
         if (nameProp) {
             for (const item in aliasClass) {
                 if (item == nameProp) {
@@ -218,8 +209,6 @@ function addNewClass() {
 
         //=====
         let masParMedia = massClass[key].split('-');
-
-        let masMedParBuf = [];
 
         for (let itemMedia of masParMedia) {
 
@@ -241,7 +230,6 @@ function addNewClass() {
             //=====
             if (itemMedia.match(regDataClass)[1]) {
                 mediaParamClass.znProp = itemMedia.match(regDataClass)[1];
-                // mediaParamClass[itemMedia] = itemMedia.match(regDataClass)[1];
             }
 
 
@@ -263,10 +251,38 @@ function addNewClass() {
             if (itemMedia.match(regSizeClass)) {
 
                 const limitSizeCssMax = itemMedia.match(regSizeMaxClass);
-                if (limitSizeCssMax && limitSizeCssMax[1]) mediaParamClass.maxSize = limitSizeCssMax[1];
+                if (limitSizeCssMax && limitSizeCssMax[1]) {
+
+                        if (limitSizeCssMax[1].match(/[$]/)) {
+                            for (const keySizeVar in sizeValue) {
+                                const regex = new RegExp('[$]' + keySizeVar, 'g');
+                                if (limitSizeCssMax[1].match(regex)) {
+                                    mediaParamClass.maxSize = limitSizeCssMax[1].replace(regex, sizeValue[keySizeVar]);
+                                    break;
+                                }
+                            }
+                        } else {
+                            mediaParamClass.maxSize = limitSizeCssMax[1];
+                        }
+                }
+
 
                 const limitSizeCssMin = itemMedia.match(regSizeMinClass);
-                if (limitSizeCssMin && limitSizeCssMin[1]) mediaParamClass.minSize = limitSizeCssMin[1];
+                if (limitSizeCssMin && limitSizeCssMin[1]) {
+
+
+                    if (limitSizeCssMax[1].match(/[$]/)) {
+                        for (const keySizeVar in sizeValue) {
+                            const regex = new RegExp('[$]' + keySizeVar, 'g');
+                            if (limitSizeCssMax[1].match(regex)) {
+                                mediaParamClass.minSize = limitSizeCssMax[1].replace(regex, sizeValue[keySizeVar]);
+                                break;
+                            }
+                        }
+                    } else {
+                        mediaParamClass.minSize = limitSizeCssMax[1];
+                    }
+                }
             }
 
 
@@ -276,7 +292,6 @@ function addNewClass() {
 
         nameClasses.push(dataClass);
     }
-
 
 
     //=============
