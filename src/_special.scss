@@ -1,15 +1,13 @@
 .css-rule {
-        [data-css~=fz100-50\@\$ll-40\@\$xx] {
-                font-size: 100px;@media (max-width: 1400px) {
-					font-size: 50px;
-				}@media (max-width: 500px) {
-					font-size: 40px;
+        [data-css~=fz100] {
+                font-size: 100px;
+            }[data-css~=m100] {
+                margin: 100px;
+            }[data-css~=mb25-24\@\$mm] {
+                margin-bottom: 25px;@media (max-width: 900px) {
+					margin-bottom: 24px;
 				}
-            }[data-css~=mb200-100\@1000-500\@500] {
-                margin-bottom: 200px;@media (max-width: 1000px) {
-					margin-bottom: 100px;
-				}@media (max-width: 500px) {
-					margin-bottom: 500px;
-				}
+            }[data-css~=w20vw] {
+                width: 20vw;
             }
     }

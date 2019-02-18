@@ -17,6 +17,12 @@ var gulp = require('gulp'),
 
 const fs = require("fs");
 
+const aliasClassSourch = require('./js/alias');
+const aliasClass = aliasClassSourch.zn;
+
+const sizeValueSourch = require('./js/varSize');
+const sizeValue = sizeValueSourch.zn;
+
 
 // write rospritesmithuts
 var path = {
@@ -37,15 +43,7 @@ var path = {
 // styles
 gulp.task('styles:build', function () {
     gulp.src(path.src.styles)               // Выберем наш main.scss
-        .pipe(through2(function (file, enc, callback) {
-            addNewClass(file);
-            callback(null, file)
-        }))
         .pipe(plumber())
-        // .pipe(through2(function (file, enc, callback) {
-        //     writeFile(file);
-        //     callback(null, file);
-        // }))
         .pipe(sourcemaps.init())            // То же самое что и с js
         .pipe(sass())                       // Скомпилируем
         .pipe(prefixer())                   // Добавим вендорные префиксы
@@ -57,25 +55,60 @@ gulp.task('styles:build', function () {
 });
 
 
+//======
+gulp.task('stylesTag:build', function () {
+	gulp.src(path.src.styles)               // Выберем наш main.scss
+		.pipe(through2(function (file, enc, callback) {
+			addNewClass(file);
+			callback(null, file)
+		}))
+		.pipe(plumber())
+        .pipe(sourcemaps.init())
+		.pipe(sass())
+		.pipe(prefixer())
+		.pipe(gulp.dest(path.build.styles))
+		.pipe(browserSync.reload({stream: true}))
+});
+
+
 // styles
 gulp.task('browser', function () {
     gulp.src("*.html")               // Выберем наш main.scss
         .pipe(plumber())
-        .pipe(through2(function (file, enc, callback) {
-            addNewClass(file);
-            callback(null, file)
-        }))
         .pipe(browserSync.reload({stream: true}))
 });
 
+// styles
+gulp.task('browserTag', function () {
+	gulp.src("*.html")               // Выберем наш main.scss
+		.pipe(plumber())
+		.pipe(through2(function (file, enc, callback) {
+			addNewClass(file);
+			callback(null, file)
+		}))
+		.pipe(browserSync.reload({stream: true}))
+});
 
+
+//======
 gulp.task('build', [
     'styles:build'
 ]);
 
+gulp.task('buildTag', [
+	'stylesTag:build'
+]);
+
+
+//======
 gulp.task('watch', function () {
     gulp.watch(path.watch.styles, ['styles:build'])
     gulp.watch('*.html', ['browser'])
+});
+
+gulp.task('watchTag', function () {
+	gulp.watch(path.watch.styles, ['stylesTag:build'])
+	gulp.watch('*.html', ['browserTag'])
 });
 
 gulp.task('browser-sync', function () {
@@ -88,20 +121,18 @@ gulp.task('browser-sync', function () {
     });
 });
 
+gulp.task('now-reload', ['build', 'browser-sync']);
 gulp.task('default', ['build', 'watch', 'browser-sync']);
 gulp.task('default-browser-sync', ['build', 'watch', 'browser-sync']);
 
+gulp.task('reloadTag', ['watchTag', 'browser-sync']);
+gulp.task('tag', ['buildTag', 'browser-sync']);
+
 
 //============================================================================
 //============================================================================
 //============================================================================
 //============================================================================
-
-const aliasClassSourch = require('./js/alias');
-const aliasClass = aliasClassSourch.zn;
-
-const sizeValueSourch = require('./js/varSize');
-const sizeValue = sizeValueSourch.zn;
 
 
 function addNewClass() {
