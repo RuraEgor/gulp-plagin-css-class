@@ -1,12 +1,3 @@
-/*
-  // Example gradient
-  .body{
-    @include background-gradient(#fff14d, #82f8c3, vertical);
-  }
-*/
-[data-dawdaw="fz145"]
-[data-dawdaw="fz145 lh34"]
-//================================================================================
 @mixin background-gradient($firstColor, $lastColor, $orientation) {
   $dir: (
     one: 'left,',
@@ -177,12 +168,12 @@
 @for $i from 1 to $column-count {
 
   .c#{$i} {
-    width: ($column-width-1 * $i) + %;
+    width: ($column-width-1 * $i) + '%';
     padding: 0 #{$indent-grid}px;
   }
 
   .co#{$i} {
-    margin-left: ($column-width-1 * $i) + %;
+    margin-left: ($column-width-1 * $i) + '%';
   }
 }
 
@@ -199,12 +190,12 @@
     @for $i from 1 to $column-count {
 
       .c#{$i}#{$name} {
-        width: ($column-width-1 * $i) + %;
+        width: ($column-width-1 * $i) + '%';
         padding: 0 #{$indent-grid}px;
       }
 
       .co#{$i}#{$name} {
-        margin-left: ($column-width-1 * $i) + %;
+        margin-left: ($column-width-1 * $i) + '%';
       }
     }
 
