@@ -1,0 +1,13 @@
+.css-rule {
+        [data-css~=fz100] {
+                font-size: 100px;
+            }[data-css~=m100] {
+                margin: 100px;
+            }[data-css~=mb25-24\@\$mm] {
+                margin-bottom: 25px;@media (max-width: 900px) {
+					margin-bottom: 24px;
+				}
+            }[data-css~=w20vw] {
+                width: 20vw;
+            }
+    }

@@ -17,6 +17,12 @@ var gulp = require('gulp'),
 
 const fs = require("fs");
 
+const aliasClassSourch = require('./js/alias');
+const aliasClass = aliasClassSourch.zn;
+
+const sizeValueSourch = require('./js/varSize');
+const sizeValue = sizeValueSourch.zn;
+
 
 // write rospritesmithuts
 var path = {
@@ -37,15 +43,7 @@ var path = {
 // styles
 gulp.task('styles:build', function () {
     gulp.src(path.src.styles)               // Выберем наш main.scss
-        .pipe(through2(function (file, enc, callback) {
-            addNewClass(file);
-            callback(null, file)
-        }))
         .pipe(plumber())
-        // .pipe(through2(function (file, enc, callback) {
-        //     writeFile(file);
-        //     callback(null, file);
-        // }))
         .pipe(sourcemaps.init())            // То же самое что и с js
         .pipe(sass())                       // Скомпилируем
         .pipe(prefixer())                   // Добавим вендорные префиксы
@@ -57,25 +55,60 @@ gulp.task('styles:build', function () {
 });
 
 
+//======
+gulp.task('stylesTag:build', function () {
+	gulp.src(path.src.styles)               // Выберем наш main.scss
+		.pipe(through2(function (file, enc, callback) {
+			addNewClass(file);
+			callback(null, file)
+		}))
+		.pipe(plumber())
+        .pipe(sourcemaps.init())
+		.pipe(sass())
+		.pipe(prefixer())
+		.pipe(gulp.dest(path.build.styles))
+		.pipe(browserSync.reload({stream: true}))
+});
+
+
 // styles
 gulp.task('browser', function () {
     gulp.src("*.html")               // Выберем наш main.scss
         .pipe(plumber())
-        .pipe(through2(function (file, enc, callback) {
-            addNewClass(file);
-            callback(null, file)
-        }))
         .pipe(browserSync.reload({stream: true}))
 });
 
+// styles
+gulp.task('browserTag', function () {
+	gulp.src("*.html")               // Выберем наш main.scss
+		.pipe(plumber())
+		.pipe(through2(function (file, enc, callback) {
+			addNewClass(file);
+			callback(null, file)
+		}))
+		.pipe(browserSync.reload({stream: true}))
+});
 
+
+//======
 gulp.task('build', [
     'styles:build'
 ]);
 
+gulp.task('buildTag', [
+	'stylesTag:build'
+]);
+
+
+//======
 gulp.task('watch', function () {
     gulp.watch(path.watch.styles, ['styles:build'])
     gulp.watch('*.html', ['browser'])
+});
+
+gulp.task('watchTag', function () {
+	gulp.watch(path.watch.styles, ['stylesTag:build'])
+	gulp.watch('*.html', ['browserTag'])
 });
 
 gulp.task('browser-sync', function () {
@@ -88,219 +121,279 @@ gulp.task('browser-sync', function () {
     });
 });
 
+gulp.task('now-reload', ['build', 'browser-sync']);
 gulp.task('default', ['build', 'watch', 'browser-sync']);
 gulp.task('default-browser-sync', ['build', 'watch', 'browser-sync']);
 
+gulp.task('reloadTag', ['watchTag', 'browser-sync']);
+gulp.task('tag', ['buildTag', 'browser-sync']);
+
 
 //============================================================================
 //============================================================================
 //============================================================================
 //============================================================================
-
-let aliasClass = {
-    'db': 'display: block',
-    'w': 'width',
-    'm': 'margin',
-    'mb': 'margin-bottom',
-    'p': 'padding',
-    'pb': 'padding-bottom',
-    'fz': 'font-size',
-    'lh': 'line-height',
-    // 'db': 'display: block'
-}
-
 
 
 function addNewClass() {
-    
+
     let textFile = fs.readFileSync("index.html", "utf8");
 
-    const srhEl = 'XX';
 
-    const re = /class=("|').*XX.*("|')/ig;
+    const regFirstSearch = /data-css=("|').*@*.*("|')/ig;
 
-    let found = textFile.match(re);
+    let allMatch = textFile.match(regFirstSearch);
 
     let massClass = [];
 
-    for (const key in found) {
-        found[key] = found[key].replace(/class/, "");
-        found[key] = found[key].replace(/=/, "");
-        found[key] = found[key].replace(/"/g, "");
-        found[key] = found[key].replace(/'/g, "");
+    for (const key in allMatch) {
+        allMatch[key] = allMatch[key].replace(/data-css/, '');
+        allMatch[key] = allMatch[key].replace(/=/, '');
+        allMatch[key] = allMatch[key].replace(/"/g, '');
+        allMatch[key] = allMatch[key].replace(/'/g, '');
 
-        if (found[key].match(/\s/g)) {
+        if (allMatch[key].match(/\s/g)) {
 
-            let masClassInObj = found[key].split(" ");
+            let masClassInObj = allMatch[key].split(" ");
 
             for (const item of masClassInObj) {
                 massClass.push(item);
             }
         } else {
-            massClass.push(found[key]);
+            massClass.push(allMatch[key]);
         }
     }
 
+
+
+    // for (let keySize in massClass) {
+    //     if (massClass[keySize].match(/[$]/)) {
+    //
+    //         for (const keySizeVar in sizeValue) {
+    //
+    //             const regex = new RegExp('[$]' + keySizeVar, 'g');
+    //             if (massClass[keySize].match(regex)) {
+    //                 massClass[keySize] = massClass[keySize].replace(regex, sizeValue[keySizeVar]);
+    //             }
+    //         }
+    //     }
+    // }
+
+
     //====  DELETE DUOBLICATE
-    const regSpeshSimv = /.*XX.*/;
+    const regSpeshSimv = /.*@.*/;
 
     massClass = massClass.sort().reduce(function (arr, el) {
         if (!arr.length || arr.length && arr[arr.length - 1] != el) {
 
-            if (el.match(regSpeshSimv)) {
-                arr.push(el);
-            }
+            arr.push(el);
         }
         return arr;
     }, []);
 
-    console.log("match-delete-doubl", massClass);
+    // console.log("match-delete-doubl", massClass);
 
 
     //====
-    const regBegClass = /([A-Za-z]*)[\d]*[A-Za-z]*[I]?XX{1}/;
+    const regBegClass = /^([A-Za-z]*)[\d]*[^\d-!]*[!]?[@]?/;
 
-    const regDataClass = /([\d]*)[^\d]*XX+/i;
-    const regDataEd = /[\d]*([^\d-^I]*)[I]?XX/;
-    const regImpot = /([I]?)XX+/;
+    const regDataClass = /^[A-Za-z]*([\d]*)[^\d]*@?/i;
+    const regDataEd = /^[A-Za-z]*[\d]*([^\d-!-@]*)[!]?@?/;
+    // const regImpot = /([!]?)@?/;
+    const regImpot = /[!]{1}/;
 
-    const regSizeClass = /XX+(.*)/;
-    const regSizeMaxClass = /XX+(\d*)/;
-    const regSizeMinClass = /XX+[\d]*[-]{1}(\d*)/;
-
+    const regSizeClass = /@+(.*)/;
+    const regSizeMaxClass = /@+([$]?[\w-\d]*)[>]?[$]?[\w-\d]*/i;
+    const regSizeMinClass = /@+[$]?[\w-\d]*[<]{1}([$]?[\w-\d]*)/i;
 
     let nameClasses = [];
-
 
     for (const key in massClass) {
 
         let dataClass = {
             nameClass: '',
             nameProp: '',
-            znProp: '',
-            edProp: '',
-            importProp: '',
-            maxSize: '',
-            minSize: ''
+            mediaOpt: []
         }
 
-        //=====
-        if (massClass[key].match(regImpot)[1]) {
-            dataClass.importProp = ' !important';
-        }
 
         //=====
-        dataClass.nameClass = massClass[key];
+        let nameClass = massClass[key].replace(/\@/g, '\\@');
+        nameClass = nameClass.replace(/\!/g, '\\!');
+        nameClass = nameClass.replace(/\%/g, '\\%');
+        nameClass = nameClass.replace(/\>/g, '\\>');
+        nameClass = nameClass.replace(/\</g, '\\<');
+        nameClass = nameClass.replace(/\$/g, '\\$');
+        dataClass.nameClass = nameClass;
 
-        let nameProp = massClass[key].match(regBegClass)[1];
+
+        //=====
+        const nameProp = massClass[key].match(regBegClass)[1];
         if (nameProp) {
-
             for (const item in aliasClass) {
-                if (dataClass.importProp && nameProp.match(/.*[I]?/)) {
-                    if (nameProp.match(/(.*)[I]/)) nameProp = nameProp.match(/(.*)[I]/)[1];
-                }
-
-
                 if (item == nameProp) {
                     dataClass.nameProp = aliasClass[item];
                 }
-
             }
         }
 
 
-        let root7888 = massClass[key].match(regDataClass)[1];
-        dataClass.znProp = root7888;
+        //=====
+        let masParMedia = massClass[key].split('-');
+
+        for (let itemMedia of masParMedia) {
+
+            let mediaParamClass = {
+                znProp: '',
+                edProp: '',
+                importProp: '',
+                maxSize: '',
+                minSize: ''
+            }
 
 
-        root7888 = massClass[key].match(regDataEd);
+            //=====
+            if (itemMedia.match(regImpot)) {
+                mediaParamClass.importProp = ' !important';
+            }
 
-        if (root7888) {
-            if (root7888[1]) {
-                if (root7888[1] == 'q') {
-                    dataClass.edProp = '%';
-                } else if (root7888[1] == 'n') {
-                    dataClass.edProp = '';
+
+            //=====
+            if (itemMedia.match(regDataClass)[1]) {
+                mediaParamClass.znProp = itemMedia.match(regDataClass)[1];
+            }
+
+
+            //=====
+            const unitsRule = itemMedia.match(regDataEd)[1];
+
+            if (unitsRule) {
+                if (unitsRule == 'n') {
+                    mediaParamClass.edProp = '';
                 } else {
-	                dataClass.edProp = root7888[1];
+                    mediaParamClass.edProp = unitsRule;
                 }
             } else {
-                dataClass.edProp = 'px';
+                mediaParamClass.edProp = 'px';
             }
+
+
+            //=====
+            if (itemMedia.match(regSizeClass)) {
+
+                const limitSizeCssMax = itemMedia.match(regSizeMaxClass);
+                if (limitSizeCssMax && limitSizeCssMax[1]) {
+
+                        if (limitSizeCssMax[1].match(/[$]/)) {
+                            for (const keySizeVar in sizeValue) {
+                                const regex = new RegExp('[$]' + keySizeVar, 'g');
+                                if (limitSizeCssMax[1].match(regex)) {
+                                    mediaParamClass.maxSize = limitSizeCssMax[1].replace(regex, sizeValue[keySizeVar]);
+                                    break;
+                                }
+                            }
+                        } else {
+                            mediaParamClass.maxSize = limitSizeCssMax[1];
+                        }
+                }
+
+
+                const limitSizeCssMin = itemMedia.match(regSizeMinClass);
+                if (limitSizeCssMin && limitSizeCssMin[1]) {
+
+
+                    if (limitSizeCssMax[1].match(/[$]/)) {
+                        for (const keySizeVar in sizeValue) {
+                            const regex = new RegExp('[$]' + keySizeVar, 'g');
+                            if (limitSizeCssMax[1].match(regex)) {
+                                mediaParamClass.minSize = limitSizeCssMax[1].replace(regex, sizeValue[keySizeVar]);
+                                break;
+                            }
+                        }
+                    } else {
+                        mediaParamClass.minSize = limitSizeCssMax[1];
+                    }
+                }
+            }
+
+
+            //======
+            dataClass.mediaOpt.push(mediaParamClass);
         }
 
-
-        //----
-        if (massClass[key].match(regSizeClass)) {
-
-            const limitSizeCssMax = massClass[key].match(regSizeMaxClass);
-            if (limitSizeCssMax && limitSizeCssMax[1]) dataClass.maxSize = limitSizeCssMax[1];
-
-            const limitSizeCssMin = massClass[key].match(regSizeMinClass);
-            if (limitSizeCssMin && limitSizeCssMin[1]) dataClass.minSize = limitSizeCssMin[1];
-        }
-
-        //======
         nameClasses.push(dataClass);
     }
 
 
     //=============
     let strAllCssProp = '';
-
     for (const item of nameClasses) {
 
-        let strPorpClass = '';
+        //=====
+        let nameClassSelect = `[data-css~=${item.nameClass}]`;
 
-        if (item.znProp) {
-            strPorpClass = `${item.nameProp}: ${item.znProp}${item.edProp}${item.importProp};`;
-        } else {
-            strPorpClass = `${item.nameProp}${item.importProp};`;
-        }
-
-        strPorpClass = `.${item.nameClass} {
-        	${strPorpClass}
-        }`;
-
-
+        //=====
         let strWidthLimit = '';
+        let strWidthLimitAll = '';
 
-        if (item.maxSize && item.minSize) {
+        for (let sizeOpt of item.mediaOpt) {
+            let strPorpClass = '';
 
-            strWidthLimit = `@media (max-width: ${item.maxSize}px) and (min-width: ${item.minSize}px) {
+            if (sizeOpt.znProp) {
+                strPorpClass = `${item.nameProp}: ${sizeOpt.znProp}${sizeOpt.edProp}${sizeOpt.importProp};`;
+            } else {
+                strPorpClass = `${item.nameProp}${sizeOpt.importProp};`;
+            }
+
+
+            if (sizeOpt.maxSize && sizeOpt.minSize) {
+
+                strWidthLimit = `@media (max-width: ${sizeOpt.maxSize}px) and (min-width: ${sizeOpt.minSize}px) {
 				${strPorpClass}
 			}`;
 
-        } else {
+            } else {
 
-            if (item.maxSize) {
-                strWidthLimit = `@media (max-width: ${item.maxSize}px) {
+                if (sizeOpt.maxSize) {
+                    strWidthLimit = `@media (max-width: ${sizeOpt.maxSize}px) {
 					${strPorpClass}
 				}`;
-            }
+                }
 
-            if (item.minSize) {
-                strWidthLimit = `@media (min-width: ${item.minSize}px) {
+                if (sizeOpt.minSize) {
+                    strWidthLimit = `@media (min-width: ${sizeOpt.minSize}px) {
 					${strPorpClass}
 				}`;
+                }
             }
+
+
+            if (!sizeOpt.maxSize && !sizeOpt.minSize) {
+                strWidthLimit = strPorpClass;
+            }
+
+            strWidthLimitAll += strWidthLimit;
         }
 
 
-        if (!item.maxSize && !item.minSize) {
-            strWidthLimit = strPorpClass;
-        }
+        let fullRuleCssElem = `${nameClassSelect} {
+                ${strWidthLimitAll}
+            }`;
 
-        strAllCssProp += strWidthLimit;
+        strAllCssProp += fullRuleCssElem;
     }
 
 
+    strAllCssProp = `.css-rule {
+        ${strAllCssProp}
+    }`;
+
+
     //=======
     //=======
-    fs.writeFile('css-alias.css', strAllCssProp, function (error) {
+    fs.writeFile('src/_special.scss', strAllCssProp, function (error) {
 
         if (error) throw error; // если возникла ошибка
-
     });
 }
 
