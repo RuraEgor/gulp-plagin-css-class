@@ -1,13 +1,19 @@
 .css-rule {
-        [data-css~=fz100] {
-                font-size: 100px;
-            }[data-css~=m100] {
-                margin: 100px;
-            }[data-css~=mb25-24\@\$mm] {
-                margin-bottom: 25px;@media (max-width: 900px) {
-					margin-bottom: 24px;
+        [data-css~=fz120-70\@700] {
+                font-size: 120px;@media (max-width: 700px) {
+					font-size: 70px;
 				}
-            }[data-css~=w20vw] {
-                width: 20vw;
+            }[data-css~=fz145] {
+                font-size: 145px;
+            }[data-css~=fz80] {
+                font-size: 80px;
+            }[data-css~=m50] {
+                margin: 50px;
+            }[data-css~=mb250-724\@1024] {
+                margin-bottom: 250px;@media (max-width: 1024px) {
+					margin-bottom: 724px;
+				}
+            }[data-css~=w30vw] {
+                width: 30vw;
             }
     }

@@ -17,7 +17,7 @@ var gulp = require('gulp'),
 
 const fs = require("fs");
 
-const aliasClassSourch = require('./js/alias');
+const aliasClassSourch = require('./js/alias');  //  EXPORT ALIAS-CSS
 const aliasClass = aliasClassSourch.zn;
 
 const sizeValueSourch = require('./js/varSize');
